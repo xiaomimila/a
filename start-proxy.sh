@@ -8,6 +8,6 @@ then
   sleep 2s
   /usr/bin/proxy http -t tcp -p $vpn_ip:80,$vpn_ip:443 --dns-address "1.1.1.1:53" --dns-ttl 300 --daemon --forever
 else
-	echo "already started"
+  echo "already started"
 fi
 
