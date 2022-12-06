@@ -4,21 +4,31 @@
 proxy=$(ps -ef | grep -w prox[y] | wc -l)
 if [[ $proxy = 0 ]]
 then
-  echo "Start..."
-  vpn_ip=$(vpn ip)
-  sleep 2s
-  /usr/bin/proxy http -t tcp -p $vpn_ip:80,$vpn_ip:443 --dns-address "1.1.1.1:53" --dns-ttl 300 --daemon --forever
+  echo "启动..."
+
+  vpn_ping=$(ping -c1 web-hosts)
+  if [[ $vpn_ping =~ ms ]]
+  then
+    echo "网络正常"
+    vpn_ip=$(vpn ip)
+    sleep 2s
+    /usr/bin/proxy http -t tcp -p $vpn_ip:80,$vpn_ip:443 --dns-address "1.1.1.1:53" --dns-ttl 300 --daemon --forever
+  else
+    echo "网络异常退出"
+    exit
+  fi
+
 else
-  echo "already started"
+  echo "已经启动"
 fi
 
 
 ipv6=$(/sbin/ip6tables -L)
 if [[ $ipv6 =~ DROP ]]
 then
-  echo "Yes"
+  echo "IPv6 Yes"
 else
-	echo "No"
+	echo "SET IPv6"
    ipt6="/sbin/ip6tables"
    $ipt6 -F
    $ipt6 -X
