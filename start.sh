@@ -10,7 +10,7 @@ then
   if [[ $vpn_ping =~ ms ]]
   then
     echo "网络正常"
-    vpn_ip=$(vpn ip)
+    vpn_ip=$(ifconfig tailscale0 | grep "inet " | awk -F'[: ]+' '{ print $3 }')
     sleep 2s
     /usr/bin/proxy http -t tcp -p $vpn_ip:80,$vpn_ip:443 --dns-address "1.1.1.1:53" --dns-ttl 300 --daemon --forever
   else
